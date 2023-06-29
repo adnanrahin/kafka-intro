@@ -20,6 +20,7 @@ public class ProducerDemoCallBack {
         properties.setProperty("bootstrap.servers", "localhost:9092");
         properties.put("key.serializer", StringSerializer.class.getName());
         properties.put("value.serializer", StringSerializer.class.getName());
+        properties.put("batch.size", "400");
 
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
