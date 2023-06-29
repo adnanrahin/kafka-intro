@@ -24,26 +24,34 @@ public class ProducerDemoCallBack {
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
-        for (int i = 0; i < 10; i++) {
-            ProducerRecord<String, String> producerRecord =
-                    new ProducerRecord<>("demo_java", "hello-world" + i);
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 30; i++) {
+                ProducerRecord<String, String> producerRecord =
+                        new ProducerRecord<>("demo_java", "hello-world" + i);
 
-            producer.send(producerRecord, new Callback() {
-                @Override
-                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                    if (e == null) {
-                        log.info("Received New Metadata \n" +
-                                "Topic:" + recordMetadata.topic() + " \n" +
-                                "Partition:" + recordMetadata.partition() + " \n" +
-                                "Offset:" + recordMetadata.offset() + " \n" +
-                                "Time Stamp:" + recordMetadata.timestamp() + " \n");
-                    } else {
-                        log.error("Error While Producing");
+                producer.send(producerRecord, new Callback() {
+                    @Override
+                    public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                        if (e == null) {
+                            log.info("Received New Metadata \n" +
+                                    "Topic:" + recordMetadata.topic() + " \n" +
+                                    "Partition:" + recordMetadata.partition() + " \n" +
+                                    "Offset:" + recordMetadata.offset() + " \n" +
+                                    "Time Stamp:" + recordMetadata.timestamp() + " \n");
+                        } else {
+                            log.error("Error While Producing");
+                        }
+
                     }
+                });
 
-                }
-            });
+            }
 
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
 
