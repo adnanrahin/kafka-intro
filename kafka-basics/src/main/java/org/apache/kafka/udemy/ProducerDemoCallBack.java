@@ -45,7 +45,6 @@ public class ProducerDemoCallBack {
 
                     }
                 });
-
             }
 
             try {
@@ -54,7 +53,6 @@ public class ProducerDemoCallBack {
                 throw new RuntimeException(e);
             }
         }
-
 
         producer.flush();
 
