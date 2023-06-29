@@ -26,7 +26,7 @@ public class ProducerDemoKeys {
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
         for (int j = 0; j < 2; j++) {
-            for (int i = 0; i < 30; i++) {
+            for (int i = 0; i < 3000000; i++) {
 
                 String topic = "demo_java";
                 String key = "id_" + i;
