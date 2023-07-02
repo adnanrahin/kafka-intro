@@ -1,41 +1,88 @@
 package org.wikimedia.kafka.consumer;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
+import com.google.gson.JsonParser;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.opensearch.action.bulk.BulkRequest;
+import org.opensearch.action.bulk.BulkResponse;
+import org.opensearch.action.index.IndexRequest;
+import org.opensearch.client.RequestOptions;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.client.indices.CreateIndexRequest;
+import org.opensearch.client.indices.GetIndexRequest;
+import org.opensearch.common.xcontent.XContentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URI;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
+
 public class OpenSearchConsumer {
 
-    private static final String TOPIC_NAME = "wikimedia.recentchange";
-    private static final String KAFKA_SERVER_ADDRESS = "localhost:9092";
-    private static final String SCHEMA_REGISTRY_SERVER_URL = "http://localhost:8081";
-    private static final String CONSUMER_GROUP_ID = "customer-message-consumer-group-2222";
+    public static RestHighLevelClient createOpenSearchClient() {
+        String connString = "http://localhost:19200";
+//        String connString = "https://c9p5mwld41:45zeygn9hy@kafka-course-2322630105.eu-west-1.bonsaisearch.net:443";
 
-    public static void main(final String[] args) {
-        // Kafka Consumer Configurations
-        final Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER_ADDRESS);
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, CONSUMER_GROUP_ID);
-        properties.put("schema.registry.url", SCHEMA_REGISTRY_SERVER_URL);
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        // we build a URI from the connection string
+        RestHighLevelClient restHighLevelClient;
+        URI connUri = URI.create(connString);
+        // extract login information if it exists
+        String userInfo = connUri.getUserInfo();
 
-        try(final Consumer<String, String> consumer = new KafkaConsumer<>(properties)){
-            consumer.subscribe(Collections.singleton(TOPIC_NAME));
-            while (true) {
-                final ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+        if (userInfo == null) {
+            // REST client without security
+            restHighLevelClient = new RestHighLevelClient(RestClient.builder(new HttpHost(connUri.getHost(), connUri.getPort(), "http")));
 
-                for (final ConsumerRecord<String, String> record : records) {
-                    System.out.println(String.format("Message Key:[ %s ] Message Payload: [ %s ]", record.key(), record.value()));
-                }
-                consumer.commitAsync();
-            }
+        } else {
+            // REST client with security
+            String[] auth = userInfo.split(":");
+
+            CredentialsProvider cp = new BasicCredentialsProvider();
+            cp.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(auth[0], auth[1]));
+
+            restHighLevelClient = new RestHighLevelClient(
+                    RestClient.builder(new HttpHost(connUri.getHost(), connUri.getPort(), connUri.getScheme()))
+                            .setHttpClientConfigCallback(
+                                    httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(cp)
+                                            .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())));
+
+
         }
+
+        return restHighLevelClient;
+    }
+
+    public static void main(final String[] args) throws IOException {
+
+        final Logger log = LoggerFactory.getLogger(OpenSearchConsumer.class.getSimpleName());
+
+        RestHighLevelClient openSearchClient = createOpenSearchClient();
+
+
+        try (openSearchClient) {
+            CreateIndexRequest createIndexRequest = new CreateIndexRequest("wikimedia");
+            openSearchClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+            log.info("The wikimedia Index has been created");
+        }
+
     }
 
 }
