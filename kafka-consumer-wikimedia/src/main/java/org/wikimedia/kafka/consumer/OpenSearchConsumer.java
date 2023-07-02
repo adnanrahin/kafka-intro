@@ -1,16 +1,13 @@
 package org.wikimedia.kafka.consumer;
 
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-public class WikimediaChangesConsumer {
+public class OpenSearchConsumer {
 
     private static final String TOPIC_NAME = "wikimedia.recentchange";
     private static final String KAFKA_SERVER_ADDRESS = "localhost:9092";
