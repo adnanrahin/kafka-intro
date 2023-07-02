@@ -76,11 +76,16 @@ public class OpenSearchConsumer {
 
         RestHighLevelClient openSearchClient = createOpenSearchClient();
 
+        boolean isExists = openSearchClient.indices().exists(new GetIndexRequest("wikimedia"), RequestOptions.DEFAULT);
 
-        try (openSearchClient) {
-            CreateIndexRequest createIndexRequest = new CreateIndexRequest("wikimedia");
-            openSearchClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
-            log.info("The wikimedia Index has been created");
+        if (!isExists) {
+            try (openSearchClient) {
+                CreateIndexRequest createIndexRequest = new CreateIndexRequest("wikimedia");
+                openSearchClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+                log.info("The wikimedia Index has been created");
+            }
+        } else {
+            log.info("Wikimedia Index Exists");
         }
 
     }
