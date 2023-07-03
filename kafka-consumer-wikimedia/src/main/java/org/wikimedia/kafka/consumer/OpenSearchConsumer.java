@@ -19,6 +19,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.opensearch.action.bulk.BulkRequest;
 import org.opensearch.action.bulk.BulkResponse;
 import org.opensearch.action.index.IndexRequest;
+import org.opensearch.action.index.IndexResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestHighLevelClient;
@@ -70,6 +71,16 @@ public class OpenSearchConsumer {
         return restHighLevelClient;
     }
 
+    private static String extractId(String json) {
+        // gson library
+        return JsonParser.parseString(json)
+                .getAsJsonObject()
+                .get("meta")
+                .getAsJsonObject()
+                .get("id")
+                .getAsString();
+    }
+
     private static KafkaConsumer<String, String> createKafkaConsumer() {
 
         String groupId = "consumer-opensearch-demo";
@@ -109,17 +120,32 @@ public class OpenSearchConsumer {
             consumer.subscribe(Collections.singleton("wikimedia.recentchange"));
 
             while (true) {
+
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(3000));
+
                 int recordCount = records.count();
-                log.info("Received: " + recordCount + " record(s)");
+                log.info("Received " + recordCount + " record(s)");
+
+                BulkRequest bulkRequest = new BulkRequest();
+
                 for (ConsumerRecord<String, String> record : records) {
-                    IndexRequest indexRequest = new IndexRequest("wikimedia")
-                            .source(record.value(), XContentType.JSON);
-                    openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
-                    log.info("Inserted 1 documents to index:");
+
+                    try {
+
+                        String id = extractId(record.value());
+
+                        IndexRequest indexRequest = new IndexRequest("wikimedia")
+                                .source(record.value(), XContentType.JSON)
+                                .id(id);
+
+                        bulkRequest.add(indexRequest);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
-
         }
     }
 }
