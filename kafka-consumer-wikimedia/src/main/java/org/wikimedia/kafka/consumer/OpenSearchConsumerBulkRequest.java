@@ -13,8 +13,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.opensearch.action.bulk.BulkRequest;
 import org.opensearch.action.bulk.BulkResponse;
@@ -36,7 +34,7 @@ import java.util.Collections;
 import java.util.Properties;
 
 
-public class OpenSearchConsumer {
+public class OpenSearchConsumerBulkRequest {
 
     public static RestHighLevelClient createOpenSearchClient() {
         String connString = "http://localhost:19200";
@@ -100,7 +98,7 @@ public class OpenSearchConsumer {
 
     public static void main(final String[] args) throws IOException {
 
-        final Logger log = LoggerFactory.getLogger(OpenSearchConsumer.class.getSimpleName());
+        final Logger log = LoggerFactory.getLogger(OpenSearchConsumerBulkRequest.class.getSimpleName());
 
         RestHighLevelClient openSearchClient = createOpenSearchClient();
 
@@ -126,6 +124,8 @@ public class OpenSearchConsumer {
                 int recordCount = records.count();
                 log.info("Received " + recordCount + " record(s)");
 
+                BulkRequest bulkRequest = new BulkRequest();
+
                 for (ConsumerRecord<String, String> record : records) {
 
                     try {
@@ -136,13 +136,26 @@ public class OpenSearchConsumer {
                                 .source(record.value(), XContentType.JSON)
                                 .id(id);
 
-                        IndexResponse indexResponse = openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
+                        bulkRequest.add(indexRequest);
 
-                        log.info(indexResponse.getId());
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    if (bulkRequest.numberOfActions() > 0) {
+                        BulkResponse bulkItemResponses = openSearchClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+                        log.info("Inserted" + bulkItemResponses.getItems().length);
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    consumer.commitAsync();
 
                 }
             }
