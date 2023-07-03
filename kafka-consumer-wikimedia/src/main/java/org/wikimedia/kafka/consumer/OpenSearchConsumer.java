@@ -70,6 +70,23 @@ public class OpenSearchConsumer {
         return restHighLevelClient;
     }
 
+    private static KafkaConsumer<String, String> createKafkaConsumer() {
+
+        String groupId = "consumer-opensearch-demo";
+
+        // create consumer configs
+        Properties properties = new Properties();
+        properties.setProperty(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        // create consumer
+        return new KafkaConsumer<>(properties);
+
+    }
+
     public static void main(final String[] args) throws IOException {
 
         final Logger log = LoggerFactory.getLogger(OpenSearchConsumer.class.getSimpleName());
@@ -78,16 +95,31 @@ public class OpenSearchConsumer {
 
         boolean isExists = openSearchClient.indices().exists(new GetIndexRequest("wikimedia"), RequestOptions.DEFAULT);
 
-        if (!isExists) {
-            try (openSearchClient) {
+        KafkaConsumer<String, String> consumer = createKafkaConsumer();
+
+        try (openSearchClient; consumer) {
+            if (!isExists) {
                 CreateIndexRequest createIndexRequest = new CreateIndexRequest("wikimedia");
                 openSearchClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
                 log.info("The wikimedia Index has been created");
+            } else {
+                log.info("Wikimedia Index Exists");
             }
-        } else {
-            log.info("Wikimedia Index Exists");
+
+            consumer.subscribe(Collections.singleton("wikimedia.recentchange"));
+
+            while (true) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(3000));
+                int recordCount = records.count();
+                log.info("Received: " + recordCount + " record(s)");
+                for (ConsumerRecord<String, String> record : records) {
+                    IndexRequest indexRequest = new IndexRequest("wikimedia")
+                            .source(record.value(), XContentType.JSON);
+                    openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
+                    log.info("Inserted 1 documents to index:");
+                }
+            }
+
         }
-
     }
-
 }
