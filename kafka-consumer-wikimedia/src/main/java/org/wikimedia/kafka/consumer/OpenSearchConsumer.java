@@ -141,7 +141,7 @@ public class OpenSearchConsumer {
                         bulkRequest.add(indexRequest);
 
                     } catch (Exception e) {
-                        e.printStackTrace(e);
+                        e.printStackTrace();
                     }
 
                 }
