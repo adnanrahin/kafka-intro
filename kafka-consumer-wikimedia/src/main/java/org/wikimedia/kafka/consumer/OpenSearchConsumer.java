@@ -71,16 +71,6 @@ public class OpenSearchConsumer {
         return restHighLevelClient;
     }
 
-    private static String extractId(String json) {
-        // gson library
-        return JsonParser.parseString(json)
-                .getAsJsonObject()
-                .get("meta")
-                .getAsJsonObject()
-                .get("id")
-                .getAsString();
-    }
-
     private static KafkaConsumer<String, String> createKafkaConsumer() {
 
         String groupId = "consumer-opensearch-demo";
@@ -120,32 +110,17 @@ public class OpenSearchConsumer {
             consumer.subscribe(Collections.singleton("wikimedia.recentchange"));
 
             while (true) {
-
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(3000));
-
                 int recordCount = records.count();
-                log.info("Received " + recordCount + " record(s)");
-
-                BulkRequest bulkRequest = new BulkRequest();
-
+                log.info("Received: " + recordCount + " record(s)");
                 for (ConsumerRecord<String, String> record : records) {
-
-                    try {
-
-                        String id = extractId(record.value());
-
-                        IndexRequest indexRequest = new IndexRequest("wikimedia")
-                                .source(record.value(), XContentType.JSON)
-                                .id(id);
-
-                        bulkRequest.add(indexRequest);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
+                    IndexRequest indexRequest = new IndexRequest("wikimedia")
+                            .source(record.value(), XContentType.JSON);
+                    IndexResponse indexResponse = openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
+                    log.info(indexResponse.getId());
                 }
             }
+
         }
     }
 }
