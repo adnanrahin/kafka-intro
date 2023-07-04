@@ -37,7 +37,7 @@ public class KafkaAvroMessageConsumer {
         		final ConsumerRecords<String, Customer> records = consumer.poll(Duration.ofMillis(100));
         		
         		for (final ConsumerRecord<String, Customer> record : records) {
-        			System.out.println(String.format("Message Key:[ %s ] Message Payload: [ %s ]", record.key(), record.value()));
+        			System.out.printf("Message Key:[ %s ] Message Payload: [ %s ]%n", record.key(), record.value());
         		}
         		consumer.commitAsync();
         	}

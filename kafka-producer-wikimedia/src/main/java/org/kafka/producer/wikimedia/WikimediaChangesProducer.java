@@ -15,7 +15,7 @@ public class WikimediaChangesProducer {
 
     public static void main(String[] args) {
 
-        String bootstrapServer = "127.0.0.1:9092";
+        String bootstrapServer = "localhost:9092";
 
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
