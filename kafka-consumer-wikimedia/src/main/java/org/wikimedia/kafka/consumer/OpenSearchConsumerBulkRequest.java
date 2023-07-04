@@ -38,18 +38,18 @@ public class OpenSearchConsumerBulkRequest {
 
     public static RestHighLevelClient createOpenSearchClient() {
         String connString = "http://localhost:19200";
-//        String connString = "https://c9p5mwld41:45zeygn9hy@kafka-course-2322630105.eu-west-1.bonsaisearch.net:443";
 
-        // we build a URI from the connection string
         RestHighLevelClient restHighLevelClient;
         URI connUri = URI.create(connString);
-        // extract login information if it exists
         String userInfo = connUri.getUserInfo();
 
         if (userInfo == null) {
-            // REST client without security
-            restHighLevelClient = new RestHighLevelClient(RestClient.builder(new HttpHost(connUri.getHost(), connUri.getPort(), "http")));
-
+            restHighLevelClient = new RestHighLevelClient(
+                    RestClient
+                            .builder(
+                                    new HttpHost(connUri.getHost(), connUri.getPort(), "http")
+                            )
+            );
         } else {
             // REST client with security
             String[] auth = userInfo.split(":");
