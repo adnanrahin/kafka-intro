@@ -1,6 +1,6 @@
-package net.javaguides.springboot.kafka;
+package org.spring.kafka.service;
 
-import net.javaguides.springboot.payload.User;
+import org.spring.kafka.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;

@@ -1,4 +1,4 @@
-package net.javaguides.springboot.payload;
+package org.spring.kafka.model;
 
 public class User {
     private int id;

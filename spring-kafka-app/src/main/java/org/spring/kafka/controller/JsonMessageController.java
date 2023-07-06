@@ -1,7 +1,7 @@
-package net.javaguides.springboot.controller;
+package org.spring.kafka.controller;
 
-import net.javaguides.springboot.kafka.JsonKafkaProducer;
-import net.javaguides.springboot.payload.User;
+import org.spring.kafka.service.JsonKafkaProducer;
+import org.spring.kafka.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,4 +1,4 @@
-package net.javaguides.springboot;
+package org.spring.kafka;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
