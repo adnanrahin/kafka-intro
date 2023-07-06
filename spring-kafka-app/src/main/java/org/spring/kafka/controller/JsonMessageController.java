@@ -2,6 +2,7 @@ package org.spring.kafka.controller;
 
 import org.spring.kafka.service.JsonKafkaProducer;
 import org.spring.kafka.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ public class JsonMessageController {
 
     private JsonKafkaProducer kafkaProducer;
 
+    @Autowired
     public JsonMessageController(JsonKafkaProducer kafkaProducer) {
         this.kafkaProducer = kafkaProducer;
     }

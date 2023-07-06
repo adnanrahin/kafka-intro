@@ -1,6 +1,7 @@
 package org.spring.kafka.controller;
 
 import org.spring.kafka.service.KafkaProducer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ public class MessageController {
 
     private KafkaProducer kafkaProducer;
 
+    @Autowired
     public MessageController(KafkaProducer kafkaProducer) {
         this.kafkaProducer = kafkaProducer;
     }
