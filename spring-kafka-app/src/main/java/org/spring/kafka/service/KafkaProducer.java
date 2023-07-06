@@ -20,7 +20,7 @@ public class KafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(String message){
+    public void sendMessage(String message) {
         LOGGER.info(String.format("Message sent %s", message));
         kafkaTemplate.send(topicName, message);
     }

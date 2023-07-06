@@ -24,7 +24,7 @@ public class JsonKafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(User data){
+    public void sendMessage(User data) {
 
         LOGGER.info(String.format("Message sent -> %s", data.toString()));
 
