@@ -1,25 +1,9 @@
-package org.kafka.spring.producer.models;
-
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package net.javaguides.springboot.payload;
 
 public class User {
-
-    @JsonProperty("id")
     private int id;
-
-    @JsonProperty("firstName")
     private String firstName;
-
-    @JsonProperty("lastName")
     private String lastName;
-
-
-    public User(int id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     public int getId() {
         return id;

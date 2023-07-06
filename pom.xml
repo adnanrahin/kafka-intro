@@ -20,7 +20,7 @@
         <module>kafka-basics</module>
         <module>kafka-producer-wikimedia</module>
         <module>kafka-consumer-wikimedia</module>
-        <module>wikimedia-spring-producer</module>
+        <module>spring-kafka-app</module>
     </modules>
 
     <properties>
