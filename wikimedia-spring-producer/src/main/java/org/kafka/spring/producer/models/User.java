@@ -1,10 +1,17 @@
 package org.kafka.spring.producer.models;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class User {
 
+    @JsonProperty("id")
     private int id;
+
+    @JsonProperty("firstName")
     private String firstName;
+
+    @JsonProperty("lastName")
     private String lastName;
 
 
