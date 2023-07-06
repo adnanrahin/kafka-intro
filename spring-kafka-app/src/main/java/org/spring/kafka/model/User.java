@@ -1,8 +1,15 @@
 package org.spring.kafka.model;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class User {
+    @JsonProperty("id")
     private int id;
+
+    @JsonProperty("firstName")
     private String firstName;
+
+    @JsonProperty("lastName")
     private String lastName;
 
     public int getId() {
