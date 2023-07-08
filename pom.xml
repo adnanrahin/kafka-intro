@@ -21,6 +21,7 @@
         <module>kafka-producer-wikimedia</module>
         <module>kafka-consumer-wikimedia</module>
         <module>spring-kafka-app</module>
+        <module>spring-kafka-producer</module>
     </modules>
 
     <properties>
