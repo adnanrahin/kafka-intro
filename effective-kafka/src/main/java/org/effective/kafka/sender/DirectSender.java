@@ -15,10 +15,8 @@ public final class DirectSender implements EventSender {
                         String topic) {
         this.topic = topic;
         final var mergedConfig = new HashMap<String, Object>();
-        mergedConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class.getName());
-        mergedConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                CustomerPayloadSerializer.class.getName());
+        mergedConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        mergedConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomerPayloadSerializer.class.getName());
         mergedConfig.putAll(producerConfig);
         producer = new KafkaProducer<>(mergedConfig);
     }
