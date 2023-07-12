@@ -1,6 +1,6 @@
-package org.effective.kafka.sender;
+package org.effective.kafka.customerevents.sender;
 
-import org.effective.kafka.event.*;
+import org.effective.kafka.customerevents.event.*;
 
 import java.util.UUID;
 

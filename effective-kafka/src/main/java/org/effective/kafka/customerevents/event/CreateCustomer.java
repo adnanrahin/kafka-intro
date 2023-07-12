@@ -1,4 +1,4 @@
-package org.effective.kafka.event;
+package org.effective.kafka.customerevents.event;
 
 import java.util.*;
 

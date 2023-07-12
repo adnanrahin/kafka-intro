@@ -1,4 +1,4 @@
-package org.effective.kafka.sender;
+package org.effective.kafka.customerevents.sender;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 

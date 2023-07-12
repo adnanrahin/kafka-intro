@@ -1,10 +1,9 @@
-package org.effective.kafka.sender;
+package org.effective.kafka.customerevents.sender;
 
-import org.apache.kafka.common.serialization.*;
-
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
-import org.effective.kafka.event.CustomerPayload;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kafka.common.serialization.Serializer;
+import org.effective.kafka.customerevents.event.CustomerPayload;
 
 public final class CustomerPayloadSerializer implements Serializer<CustomerPayload> {
     private final ObjectMapper objectMapper = new ObjectMapper();

@@ -1,10 +1,11 @@
-package org.effective.kafka.sender;
+package org.effective.kafka.customerevents.sender;
 
-import java.io.*;
-import java.util.concurrent.*;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.effective.kafka.customerevents.event.CustomerPayload;
 
-import org.apache.kafka.clients.producer.*;
-import org.effective.kafka.event.CustomerPayload;
+import java.io.Closeable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 
 public interface EventSender extends Closeable {

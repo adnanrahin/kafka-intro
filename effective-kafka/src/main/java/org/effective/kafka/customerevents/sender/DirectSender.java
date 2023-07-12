@@ -1,11 +1,12 @@
-package org.effective.kafka.sender;
-
-import java.util.*;
-import java.util.concurrent.*;
+package org.effective.kafka.customerevents.sender;
 
 import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.*;
-import org.effective.kafka.event.CustomerPayload;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.effective.kafka.customerevents.event.CustomerPayload;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 public final class DirectSender implements EventSender {
     private final Producer<String, CustomerPayload> producer;
