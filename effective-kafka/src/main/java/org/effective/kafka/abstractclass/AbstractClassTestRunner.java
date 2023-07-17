@@ -14,6 +14,12 @@ public class AbstractClassTestRunner {
 
         System.out.println(updatedClient);
 
+
+        ApplicationClient applicationClient = new ApplicationClient("application.api.org", 3000,
+                1000, "fsfsafdslkfjsioe-erw-390atare-fare", "optimus-prime");
+
+        System.out.println(applicationClient);
+
     }
 
 }

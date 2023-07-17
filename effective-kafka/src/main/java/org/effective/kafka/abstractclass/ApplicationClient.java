@@ -14,4 +14,12 @@ public class ApplicationClient extends AbstractClientConfig<ApplicationClient> {
     public ApplicationClient withApiUrl(String apiUrl) {
         return new ApplicationClient(apiUrl, getConnectionTimeout(), getReadTimeout(), apiKey, applicationName);
     }
+
+    @Override
+    public String toString() {
+        return "ApplicationClient{" +
+                "apiKey='" + apiKey + '\'' +
+                ", applicationName='" + applicationName + '\'' +
+                '}';
+    }
 }
