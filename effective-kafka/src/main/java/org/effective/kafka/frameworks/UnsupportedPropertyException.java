@@ -4,7 +4,7 @@ public class UnsupportedPropertyException extends RuntimeException {
 
     private static final Long SerialVersionUID = 1L;
 
-    private UnsupportedPropertyException(String s) {
+    UnsupportedPropertyException(String s) {
         super(s);
     }
 
