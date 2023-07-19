@@ -5,14 +5,12 @@ public abstract class AbstractClientConfig<C extends AbstractClientConfig<?>> {
     private final int connectionTimeout;
     private final int readTimeout;
 
-    // Constructor
     public AbstractClientConfig(String apiUrl, int connectionTimeout, int readTimeout) {
         this.apiUrl = apiUrl;
         this.connectionTimeout = connectionTimeout;
         this.readTimeout = readTimeout;
     }
 
-    // Getter methods for the configurations
     public String getApiUrl() {
         return apiUrl;
     }
@@ -25,7 +23,6 @@ public abstract class AbstractClientConfig<C extends AbstractClientConfig<?>> {
         return readTimeout;
     }
 
-    // Abstract method to be implemented by subclasses
     public abstract C withApiUrl(String apiUrl);
 
     @Override
@@ -37,6 +34,4 @@ public abstract class AbstractClientConfig<C extends AbstractClientConfig<?>> {
                 '}';
     }
 
-
-    // Other configuration methods can also be defined here...
 }
