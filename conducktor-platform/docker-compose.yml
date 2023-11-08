@@ -67,7 +67,7 @@ services:
     environment:
       CDK_IN_CONF_FILE: /opt/conduktor/platform-config.yaml
       KAFKA_BOOTSTRAP_SERVER: PLAINTEXT://kafka1:19092
-      SR_SERVER: "http://kafka-schema-registry:38081"
+      SR_SERVER: "http://kafka-schema-registry:8081"
       ORGANISATION_NAME: "default"
       CDK_ADMIN_EMAIL: "admin@conduktor.io"
       CDK_ADMIN_PASSWORD: "admin"
